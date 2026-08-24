@@ -1,0 +1,26 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+*.egg-info/
+
+# Env / secrets
+.env
+*.key
+
+# OS
+.DS_Store
+Thumbs.db
+
+# dbt
+target/
+dbt_packages/
+logs/
+
+# IDE
+.vscode/
+.idea/
+
+# Output artifacts (generated at runtime)
+prototype/output/
