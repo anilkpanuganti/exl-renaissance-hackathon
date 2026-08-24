@@ -1,0 +1,57 @@
+{
+  "description": "Hand-annotated ground truth of business rules and entities in legacy_customer_orders_etl.sql, used only for PoC evaluation metrics (Business Rule Extraction Coverage, Entity Grounding Accuracy).",
+  "tables": [
+    "stg_customers",
+    "raw_customers",
+    "stg_orders",
+    "raw_orders",
+    "raw_order_items",
+    "fct_orders",
+    "dim_customers"
+  ],
+  "business_rules": [
+    {
+      "id": "BR-01",
+      "name": "Customer Region Mapping",
+      "description": "region_code is mapped to a full region name: NA -> North America, EU -> Europe, AP -> Asia Pacific, else Unknown."
+    },
+    {
+      "id": "BR-02",
+      "name": "Customer Tier Classification",
+      "description": "Customer tier assigned by lifetime_value thresholds: >=50000 PLATINUM, >=15000 GOLD, >=2000 SILVER, else STANDARD."
+    },
+    {
+      "id": "BR-03",
+      "name": "Tier-Based Discount",
+      "description": "Order line discount is based on customer tier: PLATINUM 15%, GOLD 10%, SILVER 5%, STANDARD 0%."
+    },
+    {
+      "id": "BR-04",
+      "name": "Order Aging Discount Exception",
+      "description": "An additional 2% discount is applied if the order is more than 90 days old at processing time. This is an undocumented exception layered on top of BR-03.",
+      "ambiguity_flag": true,
+      "note": "Business justification for the 90-day threshold and 2% value is not documented anywhere in the source system."
+    },
+    {
+      "id": "BR-05",
+      "name": "Order Status Normalization",
+      "description": "Raw order status codes are normalized into four buckets: CANCELLED, FULFILLED, IN_PROGRESS, UNKNOWN, based on string matching against known legacy status codes."
+    },
+    {
+      "id": "BR-06",
+      "name": "Active Customer Filter",
+      "description": "Only customers with active_flag = 'Y' are loaded into staging; inactive customers are silently excluded."
+    },
+    {
+      "id": "BR-07",
+      "name": "2-Year Order Window",
+      "description": "Only orders from the last 24 months are processed into staging. Reason for this specific window is not documented in the source.",
+      "ambiguity_flag": true
+    },
+    {
+      "id": "BR-08",
+      "name": "Customer Dimension SCD Type 1",
+      "description": "dim_customers is refreshed using an overwrite (SCD Type 1) strategy \u2014 no history of customer attribute changes is retained."
+    }
+  ]
+}

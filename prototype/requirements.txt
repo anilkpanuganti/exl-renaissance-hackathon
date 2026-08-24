@@ -1,0 +1,5 @@
+# Core pipeline has zero required dependencies in mock mode (stdlib only).
+# Install these only if you want to run against a real LLM provider:
+
+anthropic>=0.40.0   # optional - for ANTHROPIC_API_KEY mode
+openai>=1.50.0      # optional - for OPENAI_API_KEY mode

@@ -40,10 +40,11 @@ supporting documentation are reviewed and finalized.
 | [`docs/references.md`](docs/references.md) | Indicative APA references |
 | [`docs/glossary.md`](docs/glossary.md) | Key terminology |
 
-> Architecture diagrams, the working PoC, evaluation rubric, prompt-engineering
-> approach, and competitive landscape analysis live on
-> **[`feature/genai-poc-framework`](../../tree/feature/genai-poc-framework)**
-> until they're reviewed and merged.
+| [`docs/architecture.md`](docs/architecture.md) | Layered framework design, Snowflake target architecture, cost/latency and hallucination-guardrail considerations |
+| [`docs/prompt-engineering.md`](docs/prompt-engineering.md) | Prompting strategy used by the PoC (structured output, chain-of-thought extraction, grounding) |
+| [`docs/evaluation-rubric.md`](docs/evaluation-rubric.md) | Quantitative + qualitative metrics used to evaluate the PoC |
+| [`docs/competitive-landscape.md`](docs/competitive-landscape.md) | Positioning vs. SnowConvert, AWS SCT, BladeBridge/Datometry, generic LLM copilots |
+| [`prototype/`](prototype/) | Working end-to-end proof-of-concept (see `prototype/README.md`) |
 
 ## 4. Project Objectives (Summary)
 
@@ -53,10 +54,21 @@ supporting documentation are reviewed and finalized.
 4. Build a conceptual proof-of-concept (SQL interpretation → dbt/Snowflake transformation → validation → documentation)
 5. Evaluate the framework's expected business benefits
 
-## 5. Status
+## 5. Running the Proof-of-Concept
 
-🚧 **Active hackathon build** — see the feature branch for current progress on the
-proof-of-concept and supporting technical documentation.
+```bash
+cd prototype
+python3 main.py
+```
+
+Runs end-to-end in mock mode with zero setup. See [`prototype/README.md`](prototype/README.md)
+for details, including how to point it at a real LLM (Anthropic or OpenAI).
+
+## 6. Status
+
+🚧 **Active hackathon build.** This branch (`feature/genai-poc-framework`) contains
+the full framework documentation and working PoC. It will be merged into `main`
+once reviewed.
 
 ## 6. License
 
