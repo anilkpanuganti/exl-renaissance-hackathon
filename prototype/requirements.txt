@@ -3,3 +3,6 @@
 
 anthropic>=0.40.0   # optional - for ANTHROPIC_API_KEY mode
 openai>=1.50.0      # optional - for OPENAI_API_KEY mode
+
+# Development / testing
+pytest>=7.0.0       # dev-dependency: run tests via `pytest` in the prototype/ folder

@@ -1,0 +1,62 @@
+{
+  "stg_customers": {
+    "columns": {
+      "customer_id": {"type": "VARCHAR", "nullable": false, "comment": "Primary key - legacy customer identifier"},
+      "customer_name": {"type": "VARCHAR", "nullable": false, "comment": "Customer full name (legacy - may be deprecated)"},
+      "email": {"type": "VARCHAR", "nullable": true, "comment": "Contact email (may contain multiple addresses in legacy system)"},
+      "region_code": {"type": "VARCHAR", "nullable": true, "comment": "Region code: 'NA','EU','AP' (sometimes NULL)"},
+      "lifetime_value": {"type": "NUMBER", "nullable": true, "comment": "Monetary lifetime value in cents (legacy: stored as integer)"},
+      "created_date": {"type": "DATE", "nullable": true, "comment": "Record creation date"}
+    }
+  },
+  "raw_orders": {
+    "columns": {
+      "order_id": {"type": "VARCHAR", "nullable": false, "comment": "Order identifier"},
+      "customer_id": {"type": "VARCHAR", "nullable": false, "comment": "FK to customers (note: sometimes blank historically)"},
+      "order_date": {"type": "DATE", "nullable": true, "comment": "Originally described as 'shipping date' in old docs"},
+      "order_status": {"type": "VARCHAR", "nullable": true, "comment": "Status code (legacy mixed vocabulary)"}
+    }
+  },
+  "raw_order_items": {
+    "columns": {
+      "order_id": {"type": "VARCHAR", "nullable": false, "comment": "FK to raw_orders"},
+      "product_id": {"type": "VARCHAR", "nullable": false, "comment": "Product SKU"},
+      "quantity": {"type": "NUMBER", "nullable": false, "comment": "Quantity ordered (integer)"},
+      "unit_price": {"type": "NUMBER", "nullable": false, "comment": "Unit price in cents - legacy rounding differs from modern systems"}
+    }
+  },
+  "stg_orders": {
+    "columns": {
+      "order_id": {"type": "VARCHAR", "nullable": false, "comment": "Order identifier (copied from raw_orders)"},
+      "customer_id": {"type": "VARCHAR", "nullable": false, "comment": "FK to stg_customers"},
+      "product_id": {"type": "VARCHAR", "nullable": false, "comment": "Product SKU"},
+      "quantity": {"type": "NUMBER", "nullable": false, "comment": "Quantity - note: legacy system allowed negative adjustments"},
+      "unit_price": {"type": "NUMBER", "nullable": false, "comment": "Unit price"},
+      "net_line_amount": {"type": "NUMBER", "nullable": true, "comment": "Net amount after discounts (derived)"},
+      "derived_status": {"type": "VARCHAR", "nullable": true, "comment": "Derived status - mapping rules historically incomplete"}
+    }
+  },
+  "fct_orders": {
+    "columns": {
+      "order_id": {"type": "VARCHAR", "nullable": false, "comment": "Fact grain: order line"},
+      "customer_id": {"type": "VARCHAR", "nullable": false, "comment": "FK to dim_customers"},
+      "product_id": {"type": "VARCHAR", "nullable": false, "comment": "Product SKU"},
+      "order_date": {"type": "DATE", "nullable": true, "comment": "Order date (business uses order_date for reporting)"},
+      "quantity": {"type": "NUMBER", "nullable": false, "comment": "Quantity"},
+      "unit_price": {"type": "NUMBER", "nullable": false, "comment": "Unit price"},
+      "net_line_amount": {"type": "NUMBER", "nullable": true, "comment": "Net amount after discounts"},
+      "derived_status": {"type": "VARCHAR", "nullable": true, "comment": "Mapped order status"}
+    }
+  },
+  "dim_customers": {
+    "columns": {
+      "customer_id": {"type": "VARCHAR", "nullable": false, "comment": "PK"},
+      "customer_name": {"type": "VARCHAR", "nullable": false, "comment": "Customer display name"},
+      "email": {"type": "VARCHAR", "nullable": true, "comment": "Primary contact - legacy may store multiple emails"},
+      "region": {"type": "VARCHAR", "nullable": true, "comment": "Full region name (e.g., 'North America')"},
+      "customer_tier": {"type": "VARCHAR", "nullable": true, "comment": "Tier: PLATINUM/GOLD/SILVER/STANDARD"},
+      "created_date": {"type": "DATE", "nullable": true, "comment": "Customer create timestamp"},
+      "legacy_flag": {"type": "VARCHAR", "nullable": true, "comment": "DEPRECATED: used by old reporting, should be ignored"}
+    }
+  }
+}

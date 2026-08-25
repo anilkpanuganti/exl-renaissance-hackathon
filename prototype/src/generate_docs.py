@@ -13,7 +13,9 @@ from datetime import datetime, timezone
 
 
 def generate_migration_report(analysis: dict, validation: dict, dbt_files: list,
-                               source_name: str) -> str:
+                               source_name: str, metadata_findings: dict = None,
+                               workflow_jobs: list = None,
+                               migration_plan: dict = None) -> str:
     lines = []
     lines.append(f"# Migration Report: {source_name}")
     lines.append("")
@@ -78,6 +80,21 @@ def generate_migration_report(analysis: dict, validation: dict, dbt_files: list,
         lines.append(f"- `{f}`")
     lines.append("")
 
+    # --- Per-job breakdown (workflow) ---
+    if workflow_jobs:
+        lines.append("## 4.a Per‑job Analysis")
+        lines.append("")
+        for job in workflow_jobs:
+            job_id = job.get('id')
+            job_name = job.get('name')
+            job_analysis = job.get('analysis', {})
+            lines.append(f"### Job: {job_id} — {job_name}")
+            lines.append("")
+            lines.append(f"- Tables detected: {', '.join(job_analysis.get('tables', [])) or 'none'}")
+            lines.append(f"- Business rules identified: {len(job_analysis.get('business_rules', []))}")
+            ambiguous = [r for r in job_analysis.get('business_rules', []) if r.get('ambiguity_flag')]
+            lines.append(f"- Rules flagged ambiguous: {len(ambiguous)}")
+            lines.append("")
     # --- Validation Summary ---
     lines.append("## 5. Validation Summary")
     lines.append("")
@@ -98,6 +115,50 @@ def generate_migration_report(analysis: dict, validation: dict, dbt_files: list,
     if grounding.get("ungrounded"):
         lines.append(f"**Ungrounded entities detected (possible hallucination):** "
                       f"{', '.join(grounding['ungrounded'])}")
+        lines.append("")
+
+    # --- Metadata Interpretation Findings ---
+    if metadata_findings:
+        lines.append("## Metadata Interpretation Findings")
+        lines.append("")
+        undocumented = metadata_findings.get('undocumented_columns', [])
+        unused = metadata_findings.get('unused_metadata_columns', [])
+        inconsistent = metadata_findings.get('inconsistent_comments', [])
+
+        lines.append("### Undocumented columns referenced in SQL")
+        if undocumented:
+            for u in undocumented:
+                tbl = u.get('table') or '(unknown)'
+                lines.append(f"- {tbl}.{u.get('column')}: {u.get('reason')}")
+        else:
+            lines.append("- None detected")
+        lines.append("")
+
+        lines.append("### Declared metadata columns not used by the SQL (potential dead columns)")
+        if unused:
+            for u in unused:
+                lines.append(f"- {u.get('table')}.{u.get('column')}")
+        else:
+            lines.append("- None detected")
+        lines.append("")
+
+        lines.append("### Inconsistent or suspicious column comments")
+        if inconsistent:
+            for inc in inconsistent:
+                lines.append(f"- {inc.get('table')}.{inc.get('column')}: {inc.get('reason')} -- comment: {inc.get('comment')}")
+        else:
+            lines.append("- None detected")
+        lines.append("")
+
+    # --- Migration Plan ---
+    if migration_plan:
+        lines.append("## Migration Plan")
+        lines.append("")
+        lines.append("| Order | Table | Effort | Blocking | Rules touching |")
+        lines.append("|---|---|---|---|---|")
+        for step in migration_plan.get('steps', []):
+            rules = ", ".join(step.get('rules_touching', [])) or '-' 
+            lines.append(f"| {step.get('order')} | {step.get('table')} | {step.get('effort')} | {str(step.get('blocking'))} | {rules} |")
         lines.append("")
 
     lines.append("## 6. Recommendation")
