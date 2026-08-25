@@ -15,14 +15,16 @@ legacy SQL script**:
 
 ```bash
 cd prototype
-python3 main.py
+python3 main.py            # interactive review of ambiguous rules
+python3 main.py --auto-approve   # non-interactive / CI-friendly: auto-approve ambiguous rules
 ```
 
 This runs entirely in **mock mode** by default (deterministic heuristic
 extraction, no external calls, no dependencies beyond the Python standard
-library) — so it's fully demoable with zero setup. See `docs/architecture.md`
-§5–6 for why mock mode is a legitimate, documented part of the design (cost
-control fallback), not just a stub.
+library) — so it's fully demoable with zero setup. Use `--auto-approve` for
+CI or scripted runs to preserve the pipeline's non-interactive behavior. See
+`docs/architecture.md` §5–6 for why mock mode is a legitimate, documented
+part of the design (cost control fallback), not just a stub.
 
 Output is written to `prototype/output/`:
 - `analysis.json` — AI Analysis Layer output

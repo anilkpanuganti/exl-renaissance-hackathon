@@ -1,5 +1,9 @@
 # GenAI-Assisted Legacy ETL Modernization Framework
 
+[![CI](https://github.com/anilkpanuganti/exl-renaissance-hackathon/actions/workflows/ci.yml/badge.svg)](https://github.com/anilkpanuganti/exl-renaissance-hackathon/actions/workflows/ci.yml)
+
+
+
 ### A Snowflake-Based Approach to Cloud-Native Data Platform Migration
 
 **Organization:** EXL Pvt. Ltd., Gurgaon, Haryana, India
