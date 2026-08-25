@@ -1,0 +1,28 @@
+{
+  "workflow_name": "inventory_sync_workflow",
+  "description": "A simple 3-step legacy batch workflow that extracts inventory, transforms quantities, and syncs to a reporting store. Representative of an Informatica/shell-orchestrated job chain.",
+  "schedule": {
+    "cron": "0 2 * * *",
+    "timezone": "UTC"
+  },
+  "jobs": [
+    {
+      "id": "job1_extract",
+      "name": "Extract raw inventory",
+      "script": "job1_extract_inventory.sql",
+      "depends_on": []
+    },
+    {
+      "id": "job2_transform",
+      "name": "Transform inventory quantities",
+      "script": "job2_transform_inventory.sql",
+      "depends_on": ["job1_extract"]
+    },
+    {
+      "id": "job3_sync",
+      "name": "Sync to reporting store",
+      "script": "job3_sync_inventory.sql",
+      "depends_on": ["job2_transform"]
+    }
+  ]
+}

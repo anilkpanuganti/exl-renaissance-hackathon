@@ -1,0 +1,45 @@
+{
+  "description": "Ground truth business rules for the workflow_inventory_sync sample. Used for PoC evaluation metrics.",
+  "tables": [
+    "raw_inventory",
+    "stg_inventory",
+    "stg_inventory_transformed",
+    "rpt_inventory",
+    "ctl_commands"
+  ],
+  "business_rules": [
+    {
+      "id": "BR-W1",
+      "name": "Staging Extract Filter",
+      "description": "Only feed rows with source = 'LEGACY_FEED' are extracted into staging."
+    },
+    {
+      "id": "BR-W2",
+      "name": "Deduplication by SKU",
+      "description": "stg_inventory keeps the latest record per SKU (ROWID MAX heuristic)."
+    },
+    {
+      "id": "BR-W3",
+      "name": "Promotional Inventory Shrinkage",
+      "description": "For category_code = 'PROMO', available_qty is reduced by 10% (multiply by 0.9) to reflect estimated shrinkage; this exception is embedded in transformation logic and lacks external justification.",
+      "ambiguity_flag": true,
+      "note": "10% reduction for PROMO not documented; appears as an embedded business exception in job2_transform_inventory.sql"
+    },
+    {
+      "id": "BR-W4",
+      "name": "Active Items Filter",
+      "description": "Only items with (on_hand_qty - reserved_qty) > 0 and discontinued_flag <> 'Y' are considered for sync."
+    },
+    {
+      "id": "BR-W5",
+      "name": "18-Month Recency Requirement",
+      "description": "Items not sold in the last 18 months (last_sold_date < ADD_MONTHS(SYSDATE, -18)) are excluded from transformed staging; rationale is not recorded in source materials.",
+      "ambiguity_flag": true
+    },
+    {
+      "id": "BR-W6",
+      "name": "Reporting Merge Behavior",
+      "description": "rpt_inventory is merged with overwrite semantics for matching SKUs; new SKUs are inserted."
+    }
+  ]
+}
