@@ -1,0 +1,16 @@
+1) Summary (4–5 lines)
+
+A Generative AI-assisted framework modernizing legacy ETL/data warehouse systems to Snowflake, addressing the manual, expert-dependent nature of migration. It runs a layered pipeline — AI Analysis → Transformation → Human Review → Validation → Migration Planning → Documentation — with a working PoC that extracts business rules from legacy SQL, generates Snowflake/dbt models, and validates outputs against ground truth. On the sample run it achieved 100% entity-grounding accuracy, 100% rule-coverage, and 100% ambiguity-flag recall, correctly catching two undocumented business rules instead of guessing. It's provider-agnostic (Anthropic/OpenAI/mock) and now includes lineage generation, cost/time estimation, and a multi-job workflow sample beyond the original single-script demo.
+
+2) Problem & Customer Focus
+
+Legacy ETL/DW systems carry undocumented business rules, complex dependencies, and tribal knowledge that make Snowflake migration slow and risky. The pain point is the discovery/documentation phase before migration — not knowing what's hidden in the code. The repo's own sample script proves this concretely: a real undocumented 90-day aging discount and a 24-month order window with no stated rationale, exactly the "tribal knowledge" problem being solved.
+
+3) AI Solution & Innovation
+
+Framework: Input → AI Analysis (rule/dependency extraction) → Transformation (dbt/Snowflake generation) → Human-in-the-loop checkpoint (now genuinely interactive — approve/edit/reject, with an --auto-approve flag for CI) → Validation (grounding/coverage/ambiguity metrics) → Migration Planning (effort-tagged, dependency-sequenced steps) → Documentation (lineage + migration report). Innovation: structured JSON extraction with explicit ambiguity-flagging as a hallucination guardrail, validated against hand-annotated ground truth rather than trusted at face value — plus new additions (metadata interpreter cross-checking declared metadata vs. actual SQL usage, and a deterministic cost/time estimator) that weren't in the original PoC scope.
+
+4) Standing Out from Competitors
+
+Per docs/competitive-landscape.md: SnowConvert/AWS SCT/BladeBridge focus on code conversion, not documentation or validation; generic LLM copilots have no structured grounding checks. This framework is documentation-first (business rules as the primary deliverable, code as downstream), has an explicit validation layer that checks AI output against source before a human sees it, and is provider-agnostic rather than locked to one vendor.
+
