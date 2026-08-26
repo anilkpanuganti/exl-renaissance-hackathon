@@ -234,13 +234,36 @@ def main():
         json.dump(migration_plan, f, indent=2)
     print(f"Migration plan written to {os.path.join(OUTPUT_DIR, 'migration_plan.json')}\n")
 
+    # Generate lineage artifacts (DOT/JSON/mermaid) for visualization
+    try:
+        from src.lineage import generate_lineage_graph
+        print("--- Lineage: generating lineage artifacts ---")
+        lineage_files = generate_lineage_graph(analysis, OUTPUT_DIR, metadata_findings)
+        print(f"Lineage artifacts written: {lineage_files.get('json')}, {lineage_files.get('dot')}")
+    except Exception as e:
+        print(f"Lineage generation failed: {e}")
+        lineage_files = None
+
+    # Produce cost/time/efficiency estimates for the 5-layer workflow
+    try:
+        from src.estimator import estimate_cost_time
+        print("--- Estimator: computing cost/time/efficiency estimates ---")
+        estimates_result = estimate_cost_time(analysis, migration_plan, validation, OUTPUT_DIR)
+        estimates = estimates_result.get('estimates')
+        print(f"Estimates written to: {estimates_result.get('path')}")
+    except Exception as e:
+        print(f"Estimation failed: {e}")
+        estimates = None
+
     # Phase 6: Documentation
     print("--- Phase 6: Output Layer (Documentation) ---")
     report = generate_migration_report(
         analysis, validation, dbt_files, source_name=(target if args.target else "legacy_customer_orders_etl.sql"),
         metadata_findings=metadata_findings,
         workflow_jobs=workflow_jobs,
-        migration_plan=migration_plan
+        migration_plan=migration_plan,
+        estimates=estimates,
+        lineage_files=lineage_files
     )
     report_path = os.path.join(OUTPUT_DIR, "migration_report.md")
     with open(report_path, "w") as f:

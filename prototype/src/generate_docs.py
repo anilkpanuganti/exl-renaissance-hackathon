@@ -15,7 +15,9 @@ from datetime import datetime, timezone
 def generate_migration_report(analysis: dict, validation: dict, dbt_files: list,
                                source_name: str, metadata_findings: dict = None,
                                workflow_jobs: list = None,
-                               migration_plan: dict = None) -> str:
+                               migration_plan: dict = None,
+                               estimates: dict = None,
+                               lineage_files: dict = None) -> str:
     lines = []
     lines.append(f"# Migration Report: {source_name}")
     lines.append("")
@@ -72,6 +74,15 @@ def generate_migration_report(analysis: dict, validation: dict, dbt_files: list,
                 lines.append(f"    {parent.strip().replace(' ', '_')} --> {child.strip().replace(' ', '_')}")
     lines.append("```")
     lines.append("")
+
+    # Link to lineage artifact files (DOT/JSON) if produced
+    if lineage_files:
+        lines.append("### Lineage artifacts")
+        lines.append("")
+        lines.append(f"- JSON adjacency: `{lineage_files.get('json')}`")
+        lines.append(f"- Graphviz DOT: `{lineage_files.get('dot')}`")
+        lines.append(f"- Mermaid snippet: `{lineage_files.get('mermaid')}`")
+        lines.append("")
 
     # --- Generated Artifacts ---
     lines.append("## 4. Generated dbt/Snowflake Artifacts")
@@ -159,6 +170,21 @@ def generate_migration_report(analysis: dict, validation: dict, dbt_files: list,
         for step in migration_plan.get('steps', []):
             rules = ", ".join(step.get('rules_touching', [])) or '-' 
             lines.append(f"| {step.get('order')} | {step.get('table')} | {step.get('effort')} | {str(step.get('blocking'))} | {rules} |")
+        lines.append("")
+
+    # --- Cost / Time / Efficiency Estimates ---
+    if estimates:
+        lines.append("## 7. Estimated Cost, Time & Efficiency")
+        lines.append("")
+        lines.append("**Summary:**")
+        lines.append(f"- Total estimated hours: {estimates.get('summary', {}).get('total_hours')}h")
+        lines.append(f"- Total estimated cost: ${estimates.get('summary', {}).get('total_cost_usd')}")
+        lines.append(f"- Estimated efficiency vs manual baseline: {estimates.get('summary', {}).get('estimated_efficiency_pct')}%")
+        lines.append("")
+        lines.append("**Per-layer details:**")
+        lines.append("")
+        for lname, linfo in estimates.get('layers', {}).items():
+            lines.append(f"- {lname.replace('_',' ').title()}: {linfo.get('hours')}h (${linfo.get('cost_usd')})")
         lines.append("")
 
     lines.append("## 6. Recommendation")
