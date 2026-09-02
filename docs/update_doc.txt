@@ -29,3 +29,16 @@ Articulate exactly what makes your solution unique and how it delivers better va
 
 Revenue & Business Growth
 Identify target buyer segments and prove the solution's potential for high scalability and market commercialization
+
+
+
+I have a presentation with what have been developed , I want to append what can be presented techincally during call add 1 or max
+of 2 slides. 
+
+add an visually good architecture diagram which matching to the template.
+Add important things in slide for code demo as other pages have project slides.
+
+I might be sharing my screen and present as a demo , create a document and add step by step information what to be presented in demo.
+Demo document should be simple,grounded and no hallucination.
+
+Act as judge , assess and try to provide questions and answers what judges can ask . accomidate around 10-20 questions in a new document.
