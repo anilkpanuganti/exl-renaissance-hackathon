@@ -2,62 +2,57 @@
 
 ## 1. Layered Framework
 
-The framework is organized into five sequential layers. Each layer consumes the
-previous layer's output, forming an end-to-end pipeline from raw legacy input to
-governed, documented, Snowflake-ready output.
+The framework runs as six sequential phases behind a single orchestrator
+(`prototype/main.py`). Each phase consumes the previous phase's output and
+writes its own artifact to `prototype/output/`, forming an end-to-end pipeline
+from raw legacy input to a governed, documented, Snowflake-ready design.
 
 ```mermaid
 flowchart LR
-    subgraph Input["1. Input Layer"]
-        A1[Legacy ETL Jobs]
-        A2[SQL Scripts]
-        A3[Metadata / Mapping Docs]
-        A4[Workflow Definitions]
+    subgraph Input["Input"]
+        A1[Legacy SQL scripts]
+        A2[Declared metadata]
+        A3[Workflow manifest]
+        A4[Ground-truth rules]
     end
 
-    subgraph AI["2. AI Analysis Layer"]
-        B1[Code Understanding]
-        B2[Dependency Discovery]
-        B3[Business Rule Extraction]
-        B4[Migration Recommendation]
+    subgraph Pipeline["Orchestrated pipeline — prototype/main.py"]
+        direction LR
+        B1["1. AI Analysis<br/>ai_analysis.py"]
+        B2["2. Metadata Interpretation<br/>metadata_interpreter.py"]
+        B3["3. Transformation<br/>transform.py"]
+        H1["4. Human Review Gate<br/>main.py checkpoint"]
+        B4["5. Validation<br/>validate.py"]
+        B5["6. Plan & Output<br/>planner · lineage · estimator · docs"]
+        B1 --> B2 --> B3 --> H1 --> B4 --> B5
     end
 
-    subgraph Transform["3. Transformation Layer"]
-        C1[ELT Conversion]
-        C2[SQL Optimization]
-        C3[dbt Model Generation]
-        C4[Snowflake Object Mapping]
+    subgraph Output["Output"]
+        E1[dbt models for Snowflake]
+        E2[Migration report & plan]
+        E3[Lineage & effort estimates]
+        E4[Validation / governance report]
     end
 
-    subgraph HITL["Human-in-the-Loop Checkpoint"]
-        H1[Developer Review & Sign-off]
-    end
-
-    subgraph Validate["4. Validation Layer"]
-        D1[Business Rule Verification]
-        D2[Metadata Validation]
-        D3[Quality Checks]
-        D4[Documentation Review]
-    end
-
-    subgraph Output["5. Output Layer"]
-        E1[Modernized Snowflake/dbt Design]
-        E2[Migration Documentation]
-        E3[AI Recommendations]
-        E4[Governance Reports]
-    end
-
-    Input --> AI --> Transform --> HITL --> Validate --> Output
+    Input --> Pipeline --> Output
 ```
+
+Only phase 1 depends on the LLM. Phases 2-6 are deterministic Python, so a
+model error is caught by code and by a reviewer rather than propagating into
+the delivered design. The provider itself is swappable — `src/llm_client.py`
+selects Anthropic, OpenAI or a deterministic `mock-heuristic` fallback based on
+which API key is present, and the pipeline runs end to end with no key at all.
 
 ## 2. Why a Human-in-the-Loop Checkpoint
 
 Market-standard AI-assisted migration tooling (see `competitive-landscape.md`)
 never treats LLM output as final. A mandatory review gate between the
 Transformation and Validation layers is what separates a credible enterprise
-framework from a naive "AI auto-converts everything" pitch. In the PoC, this
-checkpoint is simulated as an explicit approval step in the orchestration script
-before validation runs.
+framework from a naive "AI auto-converts everything" pitch. In the PoC the gate
+is a real interactive prompt in `main.py`: each ambiguity-flagged rule must be
+approved, edited or rejected before validation runs, an edit updates the rule
+that validation then scores, and a rejection exits non-zero. `--auto-approve`
+bypasses the prompt for CI only.
 
 ## 3. Snowflake Target Architecture
 
@@ -71,17 +66,21 @@ before validation runs.
 | **Monitoring Components** | dbt tests, freshness checks, validation reports |
 | **Security Layer** | RBAC, masking policies, governance tagging |
 
-## 4. Modernization Workflow
+## 4. Phase-by-Phase Detail
 
-1. Discovery
-2. Assessment
-3. AI Analysis
-4. Migration Planning
-5. Code Transformation
-6. **Human Review (added checkpoint)**
-7. Validation
-8. Documentation
-9. Deployment
+The order below is the order `prototype/main.py` executes.
+
+| # | Phase | Module | What it does | Artifact |
+|---|---|---|---|---|
+| 1 | AI Analysis | `src/ai_analysis.py` | Reads the legacy SQL — a single script, or every job in a workflow manifest — and extracts tables, business rules and dependencies as structured JSON, flagging any rule it cannot justify from the source | `analysis.json` (+ one file per workflow job) |
+| 2 | Metadata Interpretation | `src/metadata_interpreter.py` | Cross-references the declared metadata against the SQL that actually runs: columns documented but never used, columns used but never documented, comments that contradict the code | `metadata_interpretation.json` |
+| 3 | Transformation | `src/transform.py` | Rebuilds the logic as a Snowflake-ready dbt project — staging → intermediate → marts — with sources and tests declared | `dbt_models/`, `sources.yml`, `schema.yml` |
+| 4 | **Human Review Gate** | `main.py` → `human_checkpoint()` | Every ambiguity-flagged rule must be approved, edited or rejected; reject halts the run. `--auto-approve` keeps CI non-interactive | reviewer-approved rule set, or a halted pipeline |
+| 5 | Validation | `src/validate.py` | Scores AI output against hand-annotated ground truth on entity grounding, business rule coverage and ambiguity recall; returns `PASS` or `REVIEW_REQUIRED` | `validation_report.json` |
+| 6 | Plan & Output | `migration_planner.py`, `lineage.py`, `estimator.py`, `generate_docs.py` | Sequences the migration by dependency with effort and blocking flags, draws the lineage graph, estimates effort and cost, writes the migration report | `migration_plan.json`, `lineage.json/.dot/_mermaid.md`, `estimates.json`, `migration_report.md` |
+
+Deployment to a customer Snowflake account sits outside the PoC — the framework
+stops at a reviewed, validated design plus the plan to deploy it.
 
 ## 5. Cost & Latency Considerations
 
