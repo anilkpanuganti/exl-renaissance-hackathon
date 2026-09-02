@@ -266,7 +266,7 @@ def main():
         lineage_files=lineage_files
     )
     report_path = os.path.join(OUTPUT_DIR, "migration_report.md")
-    with open(report_path, "w") as f:
+    with open(report_path, "w", encoding="utf-8") as f:
         f.write(report)
     print(f"Migration report written to {report_path}\n")
 
