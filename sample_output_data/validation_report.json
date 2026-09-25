@@ -1,0 +1,35 @@
+{
+  "entity_grounding_accuracy": {
+    "score": 1.0,
+    "checked": 7,
+    "grounded": 7,
+    "ungrounded": []
+  },
+  "business_rule_coverage": {
+    "score": 1.0,
+    "total_ground_truth_rules": 8,
+    "matched": [
+      "BR-01",
+      "BR-02",
+      "BR-03",
+      "BR-04",
+      "BR-05",
+      "BR-06",
+      "BR-07",
+      "BR-08"
+    ],
+    "missed": []
+  },
+  "ambiguity_flag_recall": {
+    "score": 1.0,
+    "expected": 2,
+    "flagged_by_ai": 2
+  },
+  "checks_passed": [
+    "Entity Grounding Accuracy: 100.0%",
+    "Business Rule Extraction Coverage: 100.0%",
+    "Ambiguity Flag Recall: 100.0%"
+  ],
+  "checks_failed": [],
+  "overall_status": "PASS"
+}

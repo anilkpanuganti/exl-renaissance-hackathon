@@ -1,0 +1,76 @@
+{
+  "tables": [
+    "dim_customers",
+    "fct_orders",
+    "raw_customers",
+    "raw_order_items",
+    "raw_orders",
+    "stg_customers",
+    "stg_orders"
+  ],
+  "business_rules": [
+    {
+      "id": "AI-01",
+      "name": "Customer Region Mapping",
+      "description": "region_code mapped to a full region name via CASE statement.",
+      "confidence": 0.95
+    },
+    {
+      "id": "AI-02",
+      "name": "Customer Tier Classification",
+      "description": "Customer tier derived from lifetime_value thresholds.",
+      "confidence": 0.95
+    },
+    {
+      "id": "AI-03",
+      "name": "Tier-Based Discount",
+      "description": "Discount percentage applied based on customer_tier (PLATINUM/GOLD/SILVER/else).",
+      "confidence": 0.9
+    },
+    {
+      "id": "AI-04",
+      "name": "Order Aging Discount Exception",
+      "description": "Additional discount applied when order age exceeds 90 days.",
+      "confidence": 0.6,
+      "ambiguity_flag": true,
+      "confidence_notes": "Business justification for the 90-day / 2% values is not present in the source script; flagged for human review rather than assumed."
+    },
+    {
+      "id": "AI-05",
+      "name": "Order Status Normalization",
+      "description": "Raw status codes normalized into CANCELLED/FULFILLED/IN_PROGRESS/UNKNOWN buckets.",
+      "confidence": 0.9
+    },
+    {
+      "id": "AI-06",
+      "name": "Active Customer Filter",
+      "description": "Only customers with active_flag = 'Y' are included.",
+      "confidence": 0.95
+    },
+    {
+      "id": "AI-07",
+      "name": "2-Year Order Window",
+      "description": "Only orders within the last 24 months are processed.",
+      "confidence": 0.55,
+      "ambiguity_flag": true,
+      "confidence_notes": "No documented business reason found for the 24-month cutoff; flagged for human review."
+    },
+    {
+      "id": "AI-08",
+      "name": "Customer Dimension SCD Type 1",
+      "description": "dim_customers refreshed via MERGE with overwrite semantics; no history retained.",
+      "confidence": 0.85
+    }
+  ],
+  "dependencies": [
+    "stg_customers depends on raw_customers",
+    "stg_orders depends on raw_orders, raw_order_items, stg_customers",
+    "fct_orders depends on stg_orders",
+    "dim_customers depends on stg_customers"
+  ],
+  "_meta": {
+    "provider": "mock",
+    "model": "mock-heuristic-v1",
+    "layer": "AI Analysis Layer"
+  }
+}

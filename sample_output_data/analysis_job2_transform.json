@@ -1,0 +1,18 @@
+{
+  "tables": [
+    "stg_inventory",
+    "stg_inventory_transformed"
+  ],
+  "business_rules": [],
+  "dependencies": [
+    "stg_customers depends on raw_customers",
+    "stg_orders depends on raw_orders, raw_order_items, stg_customers",
+    "fct_orders depends on stg_orders",
+    "dim_customers depends on stg_customers"
+  ],
+  "_meta": {
+    "provider": "mock",
+    "model": "mock-heuristic-v1",
+    "layer": "AI Analysis Layer"
+  }
+}

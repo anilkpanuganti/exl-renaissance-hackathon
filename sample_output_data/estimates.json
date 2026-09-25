@@ -1,0 +1,39 @@
+{
+  "layers": {
+    "discovery_assessment": {
+      "hours": 2.7,
+      "cost_usd": 216.0
+    },
+    "ai_analysis": {
+      "hours": 5.75,
+      "cost_usd": 460.0
+    },
+    "transformation": {
+      "hours": 1.75,
+      "cost_usd": 140.0
+    },
+    "validation": {
+      "hours": 1.3,
+      "cost_usd": 104.0
+    },
+    "documentation_planning": {
+      "hours": 3.75,
+      "cost_usd": 300.0
+    }
+  },
+  "summary": {
+    "total_hours": 15.25,
+    "total_cost_usd": 1220.0,
+    "estimated_efficiency_pct": 41.9,
+    "assumptions": {
+      "hourly_rate_usd": 80.0,
+      "note": "Heuristic estimates for planning/demos only \u2014 verify with real team data."
+    }
+  },
+  "counts": {
+    "tables": 7,
+    "business_rules": 8,
+    "ambiguous_rules": 2,
+    "migration_steps": 7
+  }
+}

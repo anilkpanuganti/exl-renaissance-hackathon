@@ -1,0 +1,306 @@
+{
+  "undocumented_columns": [
+    {
+      "table": "stg_customers",
+      "column": "customer_tier",
+      "reason": "referenced in SQL but not present in metadata"
+    },
+    {
+      "table": "stg_customers",
+      "column": "rowid",
+      "reason": "referenced in SQL but not present in metadata"
+    },
+    {
+      "table": "d",
+      "column": "customer_name",
+      "reason": "referenced in SQL but not present in metadata"
+    },
+    {
+      "table": "d",
+      "column": "region",
+      "reason": "referenced in SQL but not present in metadata"
+    },
+    {
+      "table": "d",
+      "column": "customer_tier",
+      "reason": "referenced in SQL but not present in metadata"
+    },
+    {
+      "table": "d",
+      "column": "customer_id",
+      "reason": "referenced in SQL but not present in metadata"
+    },
+    {
+      "table": "s",
+      "column": "customer_name",
+      "reason": "referenced in SQL but not present in metadata"
+    },
+    {
+      "table": "s",
+      "column": "customer_tier",
+      "reason": "referenced in SQL but not present in metadata"
+    },
+    {
+      "table": "s",
+      "column": "customer_id",
+      "reason": "referenced in SQL but not present in metadata"
+    },
+    {
+      "table": "s",
+      "column": "region",
+      "reason": "referenced in SQL but not present in metadata"
+    },
+    {
+      "table": "s",
+      "column": "created_date",
+      "reason": "referenced in SQL but not present in metadata"
+    },
+    {
+      "table": "s",
+      "column": "email",
+      "reason": "referenced in SQL but not present in metadata"
+    },
+    {
+      "table": "0",
+      "column": "15",
+      "reason": "referenced in SQL but not present in metadata"
+    },
+    {
+      "table": "0",
+      "column": "02",
+      "reason": "referenced in SQL but not present in metadata"
+    },
+    {
+      "table": "0",
+      "column": "10",
+      "reason": "referenced in SQL but not present in metadata"
+    },
+    {
+      "table": "0",
+      "column": "05",
+      "reason": "referenced in SQL but not present in metadata"
+    },
+    {
+      "table": "i",
+      "column": "e",
+      "reason": "referenced in SQL but not present in metadata"
+    },
+    {
+      "table": "raw_customers",
+      "column": "customer_name",
+      "reason": "referenced in SQL but not present in metadata"
+    },
+    {
+      "table": "raw_customers",
+      "column": "customer_tier",
+      "reason": "referenced in SQL but not present in metadata"
+    },
+    {
+      "table": "raw_customers",
+      "column": "region",
+      "reason": "referenced in SQL but not present in metadata"
+    },
+    {
+      "table": "raw_customers",
+      "column": "customer_id",
+      "reason": "referenced in SQL but not present in metadata"
+    },
+    {
+      "table": "raw_customers",
+      "column": "created_date",
+      "reason": "referenced in SQL but not present in metadata"
+    },
+    {
+      "table": "raw_customers",
+      "column": "email",
+      "reason": "referenced in SQL but not present in metadata"
+    },
+    {
+      "table": "raw_customers",
+      "column": "hardcoded",
+      "reason": "referenced in SQL but not present in metadata"
+    },
+    {
+      "table": "order_date",
+      "column": "days",
+      "reason": "referenced in SQL but not present in metadata"
+    },
+    {
+      "table": "stg_orders",
+      "column": "order_date",
+      "reason": "referenced in SQL but not present in metadata"
+    }
+  ],
+  "unused_metadata_columns": [
+    {
+      "table": "stg_customers",
+      "column": "customer_name"
+    },
+    {
+      "table": "stg_customers",
+      "column": "email"
+    },
+    {
+      "table": "stg_customers",
+      "column": "region_code"
+    },
+    {
+      "table": "stg_customers",
+      "column": "lifetime_value"
+    },
+    {
+      "table": "stg_customers",
+      "column": "created_date"
+    },
+    {
+      "table": "fct_orders",
+      "column": "order_id"
+    },
+    {
+      "table": "fct_orders",
+      "column": "customer_id"
+    },
+    {
+      "table": "fct_orders",
+      "column": "product_id"
+    },
+    {
+      "table": "fct_orders",
+      "column": "order_date"
+    },
+    {
+      "table": "fct_orders",
+      "column": "quantity"
+    },
+    {
+      "table": "fct_orders",
+      "column": "unit_price"
+    },
+    {
+      "table": "fct_orders",
+      "column": "net_line_amount"
+    },
+    {
+      "table": "fct_orders",
+      "column": "derived_status"
+    },
+    {
+      "table": "dim_customers",
+      "column": "customer_id"
+    },
+    {
+      "table": "dim_customers",
+      "column": "customer_name"
+    },
+    {
+      "table": "dim_customers",
+      "column": "email"
+    },
+    {
+      "table": "dim_customers",
+      "column": "region"
+    },
+    {
+      "table": "dim_customers",
+      "column": "customer_tier"
+    },
+    {
+      "table": "dim_customers",
+      "column": "created_date"
+    },
+    {
+      "table": "dim_customers",
+      "column": "legacy_flag"
+    }
+  ],
+  "inconsistent_comments": [
+    {
+      "table": "stg_customers",
+      "column": "customer_id",
+      "comment": "Primary key - legacy customer identifier",
+      "reason": "comment suggests legacy/deprecated but column is actively used/normalized in SQL"
+    },
+    {
+      "table": "raw_orders",
+      "column": "order_status",
+      "comment": "Status code (legacy mixed vocabulary)",
+      "reason": "comment suggests legacy/deprecated but column is actively used/normalized in SQL"
+    },
+    {
+      "table": "raw_order_items",
+      "column": "unit_price",
+      "comment": "Unit price in cents - legacy rounding differs from modern systems",
+      "reason": "comment suggests legacy/deprecated but column is actively used/normalized in SQL"
+    },
+    {
+      "table": "stg_orders",
+      "column": "quantity",
+      "comment": "Quantity - note: legacy system allowed negative adjustments",
+      "reason": "comment suggests legacy/deprecated but column is actively used/normalized in SQL"
+    }
+  ],
+  "used_columns_by_table": {
+    "stg_customers": [
+      "customer_id",
+      "customer_tier",
+      "rowid"
+    ],
+    "d": [
+      "customer_id",
+      "customer_name",
+      "customer_tier",
+      "region"
+    ],
+    "raw_order_items": [
+      "order_id",
+      "product_id",
+      "quantity",
+      "unit_price"
+    ],
+    "raw_orders": [
+      "customer_id",
+      "order_date",
+      "order_id",
+      "order_status"
+    ],
+    "s": [
+      "created_date",
+      "customer_id",
+      "customer_name",
+      "customer_tier",
+      "email",
+      "region"
+    ],
+    "0": [
+      "02",
+      "05",
+      "10",
+      "15"
+    ],
+    "i": [
+      "e"
+    ],
+    "raw_customers": [
+      "created_date",
+      "customer_id",
+      "customer_name",
+      "customer_tier",
+      "email",
+      "hardcoded",
+      "region"
+    ],
+    "order_date": [
+      "days"
+    ],
+    "stg_orders": [
+      "customer_id",
+      "derived_status",
+      "net_line_amount",
+      "order_date",
+      "order_id",
+      "product_id",
+      "quantity",
+      "unit_price"
+    ]
+  }
+}

@@ -1,0 +1,75 @@
+{
+  "steps": [
+    {
+      "order": 1,
+      "table": "raw_customers",
+      "effort": "Low",
+      "rules_touching": [],
+      "blocking": false,
+      "notes": []
+    },
+    {
+      "order": 2,
+      "table": "raw_order_items",
+      "effort": "Low",
+      "rules_touching": [],
+      "blocking": false,
+      "notes": []
+    },
+    {
+      "order": 3,
+      "table": "raw_orders",
+      "effort": "Low",
+      "rules_touching": [],
+      "blocking": false,
+      "notes": []
+    },
+    {
+      "order": 4,
+      "table": "stg_customers",
+      "effort": "Low",
+      "rules_touching": [],
+      "blocking": false,
+      "notes": []
+    },
+    {
+      "order": 5,
+      "table": "dim_customers",
+      "effort": "Medium",
+      "rules_touching": [
+        "AI-08"
+      ],
+      "blocking": false,
+      "notes": []
+    },
+    {
+      "order": 6,
+      "table": "stg_orders",
+      "effort": "Low",
+      "rules_touching": [],
+      "blocking": false,
+      "notes": []
+    },
+    {
+      "order": 7,
+      "table": "fct_orders",
+      "effort": "Low",
+      "rules_touching": [],
+      "blocking": false,
+      "notes": []
+    }
+  ],
+  "blocking_items": [
+    "Ambiguous rule: AI-04 - Order Aging Discount Exception",
+    "Ambiguous rule: AI-07 - 2-Year Order Window"
+  ],
+  "ordered_tables": [
+    "raw_customers",
+    "raw_order_items",
+    "raw_orders",
+    "stg_customers",
+    "dim_customers",
+    "stg_orders",
+    "fct_orders"
+  ]
+}
